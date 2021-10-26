@@ -1,34 +1,17 @@
 import uvicorn
-from datetime import datetime
-from fastapi import FastAPI
-from typing import Optional, List
-from pydantic import BaseModel
+from fastapi import FastAPI, Request
 
 app = FastAPI()
 
 
-class User(BaseModel):
-    id: int
-    name = "John Doe"
-    signup_ts: Optional[datetime] = None
-    friends: List[int] = []
+@app.get("/users/me")
+def get_current_user():
+    return {"user_id": 123}
 
 
-external_data = {
-    "id": 123,
-    "signup_ts": "2019-06-01 12:22",
-    "friends": [1, 2, "3"],
-}
-user = User(**external_data)
-print(user.id)
-print(repr(user.signup_ts))
-print(user.friends)
-print(user.dict())
-
-
-@app.get("/")
-def hello():
-    return "Hello, World!"
+@app.get("/users/{user_id}")
+def get_user(user_id: int):
+    return {"user_id": user_id}
 
 
 if __name__ == "__main__":
